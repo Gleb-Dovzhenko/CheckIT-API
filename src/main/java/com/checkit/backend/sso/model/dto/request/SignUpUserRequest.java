@@ -16,9 +16,13 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class SignUpUserRequest {
 
-    @NotNull(message = "Profile id must not be null")
+    @NotNull(message = "Profile email must not be null")
     private String email;
     @Length(min = 8, max = 32, message = "Wrong password length")
     @NotEmpty(message = "Password must not be empty")
     private String password;
+    @NotEmpty(message = "First name must not be empty")
+    private String firstName;
+    @NotEmpty(message = "Second name must not be empty")
+    private String lastName;
 }

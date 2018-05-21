@@ -1,13 +1,10 @@
 package com.checkit.backend.sso.model.persistent;
 
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collections;
-import java.util.Set;
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 /**
  * Created by Gleb Dovzhenko on 22.04.2018.
@@ -15,73 +12,30 @@ import java.util.Set;
 
 @Entity
 @Table(name = "application_user")
-@Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @EqualsAndHashCode(of = {"id"})
-public class ApplicationUser implements UserDetails {
+public class ApplicationUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email")
+    @NotEmpty
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(name = "password")
+    @NotEmpty
+    @Column(unique = true, nullable = false)
     private String password;
 
-    @Column(name = "role")
+    @ElementCollection(fetch = FetchType.EAGER, targetClass = UserRole.class)
     @Enumerated(EnumType.STRING)
-    private UserRole role;
-    /*@OneToOne
-    @JoinColumn(name = "userdata_id")
-    private UserData userData;*/
+    private List<UserRole> role;
 
-    @Override
-    public Set<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(this.getRole().name()));
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    // Not supported by application
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    // Not supported by application
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    // Not supported by application
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    // Not supported by application
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    public ApplicationUser(String password, String email, UserRole role) {
-        this.password = password;
-        this.email = email;
-        //this.userData = new UserData(email);
-        this.role = role;
-    }
-
+    //@OneToOne(targetEntity = UserData.class)
+    @Embedded
+    private UserData userData;
 }

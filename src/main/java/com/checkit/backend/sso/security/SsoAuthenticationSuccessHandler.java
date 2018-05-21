@@ -26,9 +26,8 @@ public class SsoAuthenticationSuccessHandler implements AuthenticationSuccessHan
                 httpServletResponse,
                 OK.value(),
                 new OnUserAuthenticatedResponse(
-                        token.getApplicationUser().getId(),
                         token.getApplicationUser().getUsername(),
-                        token.getApplicationUser().getRole(),
+                        token.getApplicationUser().getAuthorities(),
                         token.getAccessToken(),
                         token.getRefreshToken()));
     }

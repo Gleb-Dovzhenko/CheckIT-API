@@ -1,9 +1,8 @@
 package com.checkit.backend.sso.security;
 
-import com.checkit.backend.sso.model.persistent.ApplicationUser;
-import com.checkit.backend.sso.util.JWTUtils;
 import com.checkit.backend.sso.model.JwtAuthenticationToken;
 import com.checkit.backend.sso.service.UserDetailsServiceImpl;
+import com.checkit.backend.sso.util.JWTUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +12,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +50,7 @@ public class SsoAuthenticationProvider implements AuthenticationProvider {
             throw new AuthenticationCredentialsNotFoundException("Empty login or password");
         }
 
-        ApplicationUser applicationUser = userDetailsServiceImpl.loadUserByUsername(token.getName());
+        UserDetails applicationUser = userDetailsServiceImpl.loadUserByUsername(token.getName());
         if (applicationUser == null) {
             throw new BadCredentialsException("Wrong username");
         }

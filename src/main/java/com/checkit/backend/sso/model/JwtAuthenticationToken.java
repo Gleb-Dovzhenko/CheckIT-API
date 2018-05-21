@@ -1,10 +1,10 @@
 package com.checkit.backend.sso.model;
 
-import com.checkit.backend.sso.model.persistent.ApplicationUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
@@ -15,7 +15,7 @@ import java.util.Collection;
 @AllArgsConstructor
 public class JwtAuthenticationToken implements Authentication {
 
-    private ApplicationUser applicationUser;
+    private UserDetails applicationUser;
     private String accessToken;
     private String refreshToken;
 

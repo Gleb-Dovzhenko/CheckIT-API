@@ -1,12 +1,15 @@
 package com.checkit.backend.sso.service;
 
 import com.checkit.backend.common.exeption.BadRequestException;
+import com.checkit.backend.sso.model.persistent.UserData;
+import com.checkit.backend.sso.model.dto.request.SignUpUserRequest;
 import com.checkit.backend.sso.model.persistent.ApplicationUser;
 import com.checkit.backend.sso.model.persistent.UserRole;
 import com.checkit.backend.sso.repository.ApplicationUserRepository;
-import com.checkit.backend.sso.model.dto.request.SignUpUserRequest;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -35,24 +40,48 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Transactional(readOnly = true)
     @Override
-    public ApplicationUser loadUserByUsername(@NonNull String username) {
+    public UserDetails loadUserByUsername(@NonNull String username) {
         Optional<ApplicationUser> probablyUserAccount = applicationUserRepository.findByEmail(username);
         if (!probablyUserAccount.isPresent()) {
             throw new UsernameNotFoundException("User with email " + username + " not found");
         }
-        return probablyUserAccount.get();
+
+        ApplicationUser applicationUser = probablyUserAccount.get();
+
+        return User.withUsername(applicationUser.getId().toString())
+                .password(applicationUser.getPassword())
+                .authorities(applicationUser.getRole())
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .disabled(false)
+                .build();
     }
 
     @Transactional
     public ApplicationUser registerUser(@Valid SignUpUserRequest signUpUserRequest) {
 
-        if(applicationUserRepository.findByEmail(signUpUserRequest.getEmail()).isPresent())
+        String userEmail = signUpUserRequest.getEmail();
+
+        if(applicationUserRepository.findByEmail(userEmail).isPresent())
         throw new BadRequestException("Email already exists");
 
-        ApplicationUser applicationUser = new ApplicationUser(bCryptPasswordEncoder.encode(signUpUserRequest.getPassword()),
-                                                              signUpUserRequest.getEmail(),
-                                                              UserRole.USER);
-        applicationUserRepository.save(applicationUser);
+        List<UserRole> role = new ArrayList<>();
+        role.add(UserRole.ROLE_USER);
+
+        ApplicationUser applicationUser = ApplicationUser.builder()
+                .email(userEmail)
+                .password(bCryptPasswordEncoder.encode(signUpUserRequest.getPassword()))
+                .role(role)
+                .build();
+
+        String userProfileUrl = applicationUserRepository.save(applicationUser).getId().toString();
+
+        applicationUser.setUserData(UserData.builder()
+                .profileURL(userProfileUrl)
+                .firstName(signUpUserRequest.getFirstName())
+                .lastName(signUpUserRequest.getLastName()).build());
+
         return applicationUser;
     }
 }
