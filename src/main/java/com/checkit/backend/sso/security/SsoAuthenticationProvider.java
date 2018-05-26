@@ -60,7 +60,7 @@ public class SsoAuthenticationProvider implements AuthenticationProvider {
         }
 
         final String username = applicationUser.getUsername();
-        final String role = applicationUser.getAuthorities().stream().findFirst().get().toString();
+        final String role = applicationUser.getAuthorities().toString();
 
         return new JwtAuthenticationToken(
                 applicationUser,

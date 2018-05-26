@@ -1,5 +1,6 @@
 package com.checkit.backend.sso.model.dto.request;
 
+import com.checkit.backend.sso.validation.ValidEmail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class SignUpUserRequest {
 
+    @ValidEmail
+    @NotEmpty
     @NotNull(message = "Profile email must not be null")
     private String email;
     @Length(min = 8, max = 32, message = "Wrong password length")

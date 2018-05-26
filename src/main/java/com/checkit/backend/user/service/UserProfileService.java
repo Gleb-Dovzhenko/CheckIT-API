@@ -20,7 +20,7 @@ public class UserProfileService {
     }
 
     public UserData loadUserData() {
-        Long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
-        return applicationUserRepository.findById(id).get().getUserData();
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return applicationUserRepository.findByEmail(email).get().getUserData();
     }
 }

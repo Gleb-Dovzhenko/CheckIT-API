@@ -1,5 +1,7 @@
 package com.checkit.backend.sso.model.persistent;
 
+import com.checkit.backend.idea.model.persistent.Idea;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +13,7 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "application_user")
+@Table(name = "APPLICATION_USER")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,21 +23,26 @@ public class ApplicationUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "APPLICATION_USER_ID")
     private Long id;
 
     @NotEmpty
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "EMAIL")
     private String email;
 
     @NotEmpty
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, name = "PASSWORD")
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER, targetClass = UserRole.class)
     @Enumerated(EnumType.STRING)
+    @Column(name = "USER_ROLES")
+    @JsonManagedReference
     private List<UserRole> role;
 
-    //@OneToOne(targetEntity = UserData.class)
     @Embedded
     private UserData userData;
+
+    @OneToMany(mappedBy = "applicationUser")
+    private List<Idea> userIdeas;
 }

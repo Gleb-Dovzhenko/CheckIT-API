@@ -48,7 +48,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         ApplicationUser applicationUser = probablyUserAccount.get();
 
-        return User.withUsername(applicationUser.getId().toString())
+        return User.withUsername(username)
                 .password(applicationUser.getPassword())
                 .authorities(applicationUser.getRole())
                 .accountExpired(false)
