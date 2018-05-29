@@ -23,4 +23,5 @@ public class UserProfileService {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
         return applicationUserRepository.findByEmail(email).get().getUserData();
     }
+
 }

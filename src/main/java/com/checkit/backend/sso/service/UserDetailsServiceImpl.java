@@ -1,10 +1,6 @@
 package com.checkit.backend.sso.service;
 
-import com.checkit.backend.common.exeption.BadRequestException;
-import com.checkit.backend.sso.model.persistent.UserData;
-import com.checkit.backend.sso.model.dto.request.SignUpUserRequest;
 import com.checkit.backend.sso.model.persistent.ApplicationUser;
-import com.checkit.backend.sso.model.persistent.UserRole;
 import com.checkit.backend.sso.repository.ApplicationUserRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -58,30 +51,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .build();
     }
 
-    @Transactional
-    public ApplicationUser registerUser(@Valid SignUpUserRequest signUpUserRequest) {
-
-        String userEmail = signUpUserRequest.getEmail();
-
-        if(applicationUserRepository.findByEmail(userEmail).isPresent())
-        throw new BadRequestException("Email already exists");
-
-        List<UserRole> role = new ArrayList<>();
-        role.add(UserRole.ROLE_USER);
-
-        ApplicationUser applicationUser = ApplicationUser.builder()
-                .email(userEmail)
-                .password(bCryptPasswordEncoder.encode(signUpUserRequest.getPassword()))
-                .role(role)
-                .build();
-
-        String userProfileUrl = applicationUserRepository.save(applicationUser).getId().toString();
-
-        applicationUser.setUserData(UserData.builder()
-                .profileURL(userProfileUrl)
-                .firstName(signUpUserRequest.getFirstName())
-                .lastName(signUpUserRequest.getLastName()).build());
-
-        return applicationUser;
-    }
 }
