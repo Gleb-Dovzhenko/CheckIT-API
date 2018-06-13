@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * Created by Gleb Dovzhenko on 22.05.2018.
@@ -19,5 +20,5 @@ public class IdeaCreationRequest {
     private String title;
     @NotNull
     @NotEmpty
-    private String category;
+    private List<String> category;
 }

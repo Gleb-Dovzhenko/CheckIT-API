@@ -1,7 +1,9 @@
 package com.checkit.backend.idea.service;
 
 import com.checkit.backend.idea.model.dto.request.IdeaCreationRequest;
+import com.checkit.backend.idea.model.persistent.Category;
 import com.checkit.backend.idea.model.persistent.Idea;
+import com.checkit.backend.idea.model.persistent.Status;
 import com.checkit.backend.idea.repository.IdeaCatalogRepository;
 import com.checkit.backend.sso.model.persistent.ApplicationUser;
 import com.checkit.backend.sso.repository.ApplicationUserRepository;
@@ -10,8 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Gleb Dovzhenko on 21.05.2018.
@@ -25,7 +27,7 @@ public class IdeaCatalogService {
     private ApplicationUserRepository applicationUserRepository;
 
     public List<Idea> findIdeasByCategory(String category) {
-        return ideaCatalogRepository.findByCategory(category);
+        return ideaCatalogRepository.findByCategory(Category.valueOf(category));
     }
 
     @Transactional
@@ -43,7 +45,10 @@ public class IdeaCatalogService {
                 .title(ideaCreationRequest.getTitle())
                 .author(user.getUserData().getFirstName()+" "+user.getUserData().getLastName())
                 .date(new Date())
-                .category(ideaCreationRequest.getCategory())
+                .category(ideaCreationRequest.getCategory().stream()
+                            .map(s -> Category.valueOf(s))
+                            .collect(Collectors.toSet()))
+                .status(Status.STATUS_DRAFT)
                 .build();
         return ideaCatalogRepository.save(idea);
     }

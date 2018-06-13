@@ -24,9 +24,9 @@ public class IdeaController {
     @Autowired
     private IdeaCatalogService ideaCatalogService;
 
-    @GetMapping("/{idea_category}")
-    ResponseEntity<?> ideaCatalogHandler(@RequestParam String idea_category) {
-        List<Idea> ideas = ideaCatalogService.findIdeasByCategory(idea_category);
+    @GetMapping("/category/{ideaCategory}")
+    ResponseEntity<?> ideaCatalogHandler(@PathVariable String ideaCategory) {
+        List<Idea> ideas = ideaCatalogService.findIdeasByCategory(ideaCategory.toUpperCase());
         return ResponseEntity.ok().body(new IdeaCatalogResponse(ideas));
     }
 
