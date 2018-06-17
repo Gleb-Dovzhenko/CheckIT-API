@@ -6,19 +6,15 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
- * Created by Gleb Dovzhenko on 22.05.2018.
+ * Created by Gleb Dovzhenko on 17.06.2018.
  */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdeaCreationRequest {
-    @NotNull
+public class IdeaLikeRequest {
     @NotEmpty
-    private String title;
     @NotNull
-    private String description;
-    private List<String> images;
+    private Long ideaId;
 }
