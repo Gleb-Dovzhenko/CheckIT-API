@@ -7,7 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Created by Gleb Dovzhenko on 21.05.2018.
@@ -19,10 +19,10 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = { "id"})
-public class Idea {
+public class UserIdea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IDEA_ID")
+    @Column(name = "USER_IDEA_ID")
     private Long id;
     @Column(name = "TITLE")
     private String title;
@@ -33,12 +33,11 @@ public class Idea {
     private Date date;
     @Column(name = "DESCRIPTION")
     private String description;
-    @Column(name = "CATEGORY")
-    @ElementCollection(targetClass = Category.class)
-    @Enumerated(EnumType.STRING)
-    private Set<Category> category;
     @Column(name = "STATUS")
     private Status status;
+    @Column(name = "IMAGES")
+    @ElementCollection(targetClass = String.class)
+    private List<String> images;
     @ManyToOne
     @JoinColumn(name = "APPLICATION_USER_ID", nullable = false)
     @JsonBackReference

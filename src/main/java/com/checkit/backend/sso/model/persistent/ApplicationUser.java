@@ -1,6 +1,6 @@
 package com.checkit.backend.sso.model.persistent;
 
-import com.checkit.backend.idea.model.persistent.Idea;
+import com.checkit.backend.idea.model.persistent.UserIdea;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
@@ -44,5 +44,5 @@ public class ApplicationUser {
     private UserData userData;
 
     @OneToMany(mappedBy = "applicationUser")
-    private List<Idea> userIdeas;
+    private List<UserIdea> userUserIdeas;
 }
